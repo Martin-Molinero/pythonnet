@@ -69,9 +69,15 @@ namespace Python.Runtime
             // lets wait until all assemblies are loaded
             do
             {
-                if (safeCount++ > 200)
+                // 2000 * 50 = 100s
+                if (safeCount++ > 2000)
                 {
-                    throw new TimeoutException("Timeout while waiting for assemblies to load");
+                    throw new TimeoutException($"Timeout while waiting for assemblies to load. Pending count {pendingAssemblies}");
+                }
+
+                if (safeCount % 200 == 0)
+                {
+                    Console.WriteLine($"AssemblyManager.Initialize(): in progress, pending {pendingAssemblies}");
                 }
 
                 Thread.Sleep(50);
